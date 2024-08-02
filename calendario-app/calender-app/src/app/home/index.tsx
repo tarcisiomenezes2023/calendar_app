@@ -1,8 +1,10 @@
 import { useState } from "react"
-import { View, Text } from "react-native"
+import { View, Text, TouchableOpacity } from "react-native"
 import { styles } from "./styles"
-import { Calendar, DateData } from "react-native-calendars"
+import { Calendar, DateData, LocaleConfig } from "react-native-calendars"
+import { DayState } from "react-native-calendars/src/types"
 import { Feather } from "@expo/vector-icons"
+
 
 export function Home () {
     const [day, setDay] = useState<DateData>()
@@ -29,12 +31,31 @@ export function Home () {
                 },
              }}
              minDate={new Date().toDateString()}
-             hideExtraDays={false}
              onDayPress={setDay}
              markedDates={day && {
                 [day.dateString]: { selected: true },
              }}
-             dayComponent = {() => {}}
+             dayComponent = {({ date, state }:
+                 { date: DateData
+                   state: DayState 
+                  }) => {
+                console.log(state)
+                return (
+                    <TouchableOpacity style={[
+                        styles.day,
+                        date.dateString === day?.dateString && styles.daySelected,
+                        ]} onPress={() => setDay(date)}>
+                        <Text style={[
+                        styles.dayText,
+                        (state === ("inactive" || state === "disabled"))
+                         && styles.disabled,
+                         state === "today" && styles.today,
+                         date.dateString === day?.dateString && styles.dayText,
+                        ]}>{date.day}
+                        </Text>
+                    </TouchableOpacity>
+                )
+             }}
              />
              <Text style={styles.selected}>Selected date: {day?.dateString}</Text>
         </View>
